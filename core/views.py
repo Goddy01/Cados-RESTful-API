@@ -6,13 +6,9 @@ from .serializers import AdvocateSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 # Create your views here.
-
-
-def endpoints(request):
-    data = ['/advocates', 'advocates/:username']
-    return JsonResponse(data, safe=False)
 
 class AdvocateViewSet(ViewSet):
     queryset = Advocate.objects.all()
@@ -28,7 +24,10 @@ class AdvocateViewSet(ViewSet):
     
     def list(self, request):
         """The method for listing all the advocates."""
-        advocates = Advocate.objects.all()
+        query = request.GET.get('query') # retrieves the search value from request
+        if query == None:
+            query = ''
+        advocates = Advocate.objects.filter(Q(username__icontains=query) | Q(bio__icontains=query)) # retrieves Advocate Model instances whose username or bio contains the provided query value
         serializer =AdvocateSerializer(advocates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
