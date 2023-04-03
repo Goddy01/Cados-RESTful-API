@@ -21,3 +21,9 @@ class AdvocateViewSet(ViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def list(self, request):
+        """The method for listing all the advocates."""
+        advocates = Advocate.objects.all()
+        serializer =AdvocateSerializer(advocates, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
