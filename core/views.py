@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.viewsets import ModelViewSet, ViewSet
-from .models import Advocate
-from .serializers import AdvocateSerializer
+from .models import Advocate, Company
+from .serializers import AdvocateSerializer, CompanySerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -12,6 +12,18 @@ from rest_framework import filters
 
 # Create your views here.
 
+
+class CompanyViewSet(ViewSet):
+    serializer_class = CompnaySerializer
+    queryset = Company.objects.all()
+
+    def get_object(self, name):
+        try:
+            obj = Company.objects.get(name=name)
+            self.check_object_permissions(self.request, obj)
+            return obj
+        except Company.DoesNotExist:
+            raise Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class AdvocateViewSet(ViewSet):
