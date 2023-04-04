@@ -1,9 +1,9 @@
-from .models import Advocate
+from .models import Advocate, Company
 from rest_framework.serializers import ModelSerializer
 
 class CompanySerializer(ModelSerializer):
     class Meta:
-        model = Advocate
+        model = Company
         fields = ['name', 'slogan']
 
 class AdvocateSerializer(ModelSerializer):

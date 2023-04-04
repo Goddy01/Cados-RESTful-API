@@ -46,7 +46,7 @@ class CompanyViewSet(ViewSet):
     def retrieve(self, request, *args, **kwargs):
         """The method for retrieving a specific company"""
         name = self.kwargs['name']
-        company = self.get_object(name=name)
+        company = self.get_object(name=name.title())
         serializer = CompanySerializer(company)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -59,7 +59,7 @@ class CompanyViewSet(ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def destroy(self, name):
+    def destroy(self, request, name):
         """The method for deleting a particular Company instance"""
         self.get_object(name).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -99,9 +99,8 @@ class AdvocateViewSet(ViewSet):
     
     def retrieve(self, request, *args, **kwargs):
         """The method for retrieving a specific advocate"""
-        queryset = Advocate.objects.all()
         username = self.kwargs['username']
-        advocate = get_object_or_404(queryset, username=username)
+        advocate = self.get_object(username=username.title())
         serializer = AdvocateSerializer(advocate)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
