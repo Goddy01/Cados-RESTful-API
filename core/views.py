@@ -40,6 +40,12 @@ class CompanyViewSet(ViewSet):
         companies = Company.objects.filter(Q(name__icontains=query) | Q(slogan__icontains=query))
         serializer = CompanySerializer(companies, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def retrieve(self, request, *args, **kwargs):
+        name = self.kwargs['name']
+        company = self.get_object(name=name)
+        serializer = CompanySerializer(company)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
