@@ -9,4 +9,4 @@ class CompanySerializer(ModelSerializer):
 class AdvocateSerializer(ModelSerializer):
     class Meta:
         model = Advocate
-        fields = ['username', 'bio']
+        fields = '__all__'
