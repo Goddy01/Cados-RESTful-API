@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Advocate(models.Model):
-    username =      models.CharField(max_length=255, unique=True, primary_key=True)
+    username =      models.CharField(max_length=255, unique=True)
     bio =           models.TextField(max_length=255, null=True, blank=True)
 
     def __str__(self):

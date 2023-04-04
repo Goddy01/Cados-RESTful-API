@@ -7,13 +7,26 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+import django_filters
+from rest_framework import filters
 
 # Create your views here.
 
+
+
 class AdvocateViewSet(ViewSet):
+    serializer_class = AdvocateSerializer
     queryset = Advocate.objects.all()
     lookup_field = 'username'
 
+    def get_object(self, username):
+        try:
+            obj = Advocate.objects.get(username=username)
+            self.check_object_permissions(self.request, obj)
+            return obj
+        except Advocate.DoesNotExist:
+            raise Response(status=status.HTTP_404_NOT_FOUND)
+    
     def create(self, request):
         """The method for creating new instances of Advocate Model"""
         serializer = AdvocateSerializer(data=request.data)
@@ -28,6 +41,7 @@ class AdvocateViewSet(ViewSet):
         if query == None:
             query = ''
         advocates = Advocate.objects.filter(Q(username__icontains=query) | Q(bio__icontains=query)) # retrieves Advocate Model instances whose username or bio contains the provided query value
+        # advocates = Advocate.objects.all()
         serializer =AdvocateSerializer(advocates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -38,3 +52,11 @@ class AdvocateViewSet(ViewSet):
         advocate = get_object_or_404(queryset, username=username)
         serializer = AdvocateSerializer(advocate)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def update(self, request, username):
+        instance = self.get_object(username)
+        serializer = AdvocateSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

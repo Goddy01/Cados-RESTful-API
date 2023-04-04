@@ -4,4 +4,4 @@ from rest_framework.serializers import ModelSerializer
 class AdvocateSerializer(ModelSerializer):
     class Meta:
         model = Advocate
-        fields = '__all__'
+        fields = ['username', 'bio']
