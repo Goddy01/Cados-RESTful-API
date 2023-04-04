@@ -14,7 +14,7 @@ from rest_framework import filters
 
 
 class CompanyViewSet(ViewSet):
-    serializer_class = CompnaySerializer
+    serializer_class = CompanySerializer
     queryset = Company.objects.all()
 
     def get_object(self, name):
@@ -32,6 +32,14 @@ class CompanyViewSet(ViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def list(self, request):
+        query = request.GET.get('query')
+        if not query:
+            query = ''
+        companies = Company.objects.filter(Q(name__icontains=query) | Q(slogan__icontains=query))
+        serializer = CompanySerializer(companies, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
