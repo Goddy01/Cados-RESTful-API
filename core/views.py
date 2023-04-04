@@ -16,6 +16,7 @@ from rest_framework import filters
 class CompanyViewSet(ViewSet):
     serializer_class = CompanySerializer
     queryset = Company.objects.all()
+    lookup_field = 'name'
 
     def get_object(self, name):
         try:
@@ -34,6 +35,7 @@ class CompanyViewSet(ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def list(self, request):
+        """The method for listing all the companies."""
         query = request.GET.get('query')
         if not query:
             query = ''
@@ -42,18 +44,25 @@ class CompanyViewSet(ViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def retrieve(self, request, *args, **kwargs):
+        """The method for retrieving a specific company"""
         name = self.kwargs['name']
         company = self.get_object(name=name)
         serializer = CompanySerializer(company)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def update(self, request, name):
+        """The method for updating an existing Company instance"""
         company = self.get_object(name=name)
         serializer = CompanySerializer(company, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self, name):
+        """The method for deleting a particular Company instance"""
+        self.get_object(name).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
