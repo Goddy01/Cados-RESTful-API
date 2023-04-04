@@ -25,6 +25,15 @@ class CompanyViewSet(ViewSet):
         except Company.DoesNotExist:
             raise Response(status=status.HTTP_404_NOT_FOUND)
 
+    def create(self, request):
+        """The method for creating new instances of Company Model"""
+        serializer = CompanySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class AdvocateViewSet(ViewSet):
     serializer_class = AdvocateSerializer
