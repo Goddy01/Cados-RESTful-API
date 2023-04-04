@@ -54,9 +54,16 @@ class AdvocateViewSet(ViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, username):
+        """The method for updating an existing Advocate instance"""
         instance = self.get_object(username)
         serializer = AdvocateSerializer(instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, username):
+        """The method for deleting a particular Advocate instance"""
+        instance = self.get_object(username)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
