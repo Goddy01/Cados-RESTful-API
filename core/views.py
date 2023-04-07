@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 import django_filters
 from rest_framework import filters
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -68,6 +69,7 @@ class CompanyViewSet(ViewSet):
 
 class AdvocateViewSet(ViewSet):
     serializer_class = AdvocateSerializer
+    permission_classes = [IsAuthenticated]
     queryset = Advocate.objects.all()
     lookup_field = 'username'
 
